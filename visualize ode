@@ -1,0 +1,32 @@
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+
+def model(cost, t):
+    dpdc = (-cost / cpu0)
+    return dpdc
+
+cpu0 = 100
+
+print("\nenter a cost at each prompt below\npress enter when done\n")
+t = np.linspace(0, 40)
+cost1 = input("first cost: ")
+
+y = odeint(model, cost1, t)
+cost2 = input("second cost: ")
+
+y1 = odeint(model, cost2, t)
+cost3 = input("third cost: ")
+
+y2 = odeint(model, cost3, t)
+
+
+plt.plot(t, y2, 'g-', linewidth=2, label='cost '+cost3)
+plt.plot(t, y1, 'b-', linewidth=2, label='cost '+cost2)
+plt.plot(t, y, 'r-', linewidth=2, label='cost '+cost1)
+plt.title("cost - solution")
+plt.xlabel("cost")
+plt.ylabel("performance")
+plt.legend()
+plt.show()
+
