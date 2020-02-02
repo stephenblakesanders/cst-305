@@ -1,0 +1,127 @@
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+import math
+
+# Declare initial values of y, x and step value of h
+x = 1.0
+y = -2.0
+h = .05
+
+# defines the function for finding k1
+def k1_(x0, y0):
+    k1 = model(x0, y0)
+
+    return k1
+
+# defines the function for finding k2
+def k2_(x0, y0, h, k1):
+    # finds x and y via the formula for k2
+    x = x0 + (h / 2)
+    y = y0 + ((h / 2) * k1)
+
+    # substitutes the values of x and y into the differential equation
+    k2 = model(x, y)
+
+    # returns the final value of k2 for further calculations in other functions
+    return k2
+
+#defines the function for finding k3
+def k3_(x0, y0, h, k2):
+    # finds x and y via the formula for k3
+    x = x0 + (h / 2)
+    y = y0 + ((h / 2) * k2)
+
+    # substitutes the values of x and y into the differential equation
+    k3 = model(x, y)
+
+    # returns the final value of k2 for further calculations in other functions
+    return k3
+
+#defines the function for finding k4
+def k4_(x0, y0, h, k3):
+    # finds x and y via the formula for k4
+    x = x0 + h
+    y = y0 + (h * k3)
+
+    # substitutes the values of x and y into the differential equation
+    k4 = model(x, y)
+
+    # returns the final value of k2 for further calculations in other functions
+    return k4
+
+# defines the function in which the differential equation is processed
+def model(x, y):
+    # evaluates the differential function given the values x and y
+    ans = y * math.exp(-x) - math.exp(-x)
+
+    # returns the final value of the differential equation given x and y
+    return ans
+
+# defines the function for evaluating y1 in the runge-kutta method
+def runge_kutta(x0, y0, h):
+    # calls the function of k1 for x and y, returning the final value for k1
+    ans1 = k1_(x0, y0)
+    # prints the value of k1 to the screen, helps in debugging the program
+    print("\nk1 = " + str(ans1))
+
+    # calls the function of k1 for x and y, returning the final value for k2
+    ans2 = k2_(x0, y0, h, ans1)
+    # prints the value of k2 to the screen, helps in debugging the program
+    print("k2 = " + str(ans2))
+
+    # calls the function of k1 for x and y, returning the final value for k3
+    ans3 = k3_(x0, y0, h, ans2)
+    # prints the value of k3 to the screen, helps in debugging the program
+    print("k3 = " + str(ans3))
+
+    # calls the function of k1 for x and y, returning the final value for k4
+    ans4 = k4_(x0, y0, h, ans3)
+    # prints the value of k4 to the screen, helps in debugging the program
+    print("k4 = " + str(ans4))
+
+    # calculates the final value of yn for the iteration at hand, substituting y(n-1), k1, k2, k3 and k4
+    ans = y0 + ((h / 6) * (ans1 + (2 *ans2) + (2 * ans3) + ans4))
+
+    # returns the final answer for yn for the iteration at hand
+    return ans
+
+#x = int(input("enter initial x value: "))
+#y = int(input("enter initial y value: "))
+#h = float(input("enter step value: "))
+
+# asks the user for the amount of iterations they want to conduct
+iterate = input("input iteration count: ")
+
+# declares an array in order to store all of the y values for calculations
+iter = []
+
+# declares an array in order to store all of the y values rounded for printing, so that they are easier to read
+iter2 = []
+
+plt.figure()
+
+# declares for loop in order to iterate through the array and append the y values for every iteration
+for i in range(0, int(iterate)):
+    #print("\ny" + str(i + 1) + "= " + str(runge_kutta(x, y, h)) + "\n\n")
+    iter.append(runge_kutta(x, y, h))
+    iter2.append(round(runge_kutta(x, y, h), 4))
+    #print(str(runge_kutta(x, y, h)))
+
+    plt.plot(x, y)
+
+    # calls runge-kutta method for new values of x and y
+    # updates values of x and y
+    y = runge_kutta(x, y, h)
+    x = x + h
+
+plt.show()
+
+# prints an extra line for readability
+print("\n")
+
+# delcares for loop to iterate rounded y values in array
+for i in range(len(iter2)):
+    # prints the rounded array values and given y iterationsa
+    print("\ny" + str(i + 1) + "= ")
+    print(iter2[i])
